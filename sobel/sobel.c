@@ -50,6 +50,8 @@ void sobel(uint8_t* in, uint8_t* out, uint32_t width){
     }
 }
 
+extern void _sobel(uint8_t* in, uint8_t* out, uint32_t width);
+
 void readImg(uint8_t* buffer){
     FILE * File;
 
@@ -79,6 +81,6 @@ void writeImg(uint8_t* buffer){
 
 int main(){
     readImg(inImg);
-    sobel(inImg, outImg, imgSize);
+    _sobel(inImg, outImg, imgSize);
     writeImg(outImg);
 }
