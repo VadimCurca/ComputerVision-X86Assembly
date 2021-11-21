@@ -1,7 +1,7 @@
-global _sobel
+global asm_sobel
 extern sqrt
 
-_sobel:
+asm_sobel:
     push ebp
     mov ebp, esp
     push eax
@@ -17,18 +17,22 @@ _sobel:
 ;   lines[2] = esp + 8
 ;   vx = esp + 12
 ;   vy = esp + 16
-;   i = esp + 20
+;   size = esp + 20
+
+
+    mov ebx, [ebp + 16] ; width
+    mov eax, [ebp + 20] ; heigth
+    mul ebx
+    mov [esp + 20], eax ; size
 
     mov eax, [ebp + 8]  ; inBuffer
-    mov ecx, [ebp + 16] ; width
 
     mov [esp + 0], eax ; lines[0]
-    add eax, 1920
+    add eax, ebx
     mov [esp + 4], eax ; lines[1]
-    add eax, 1920
+    add eax, ebx
     mov [esp + 8], eax ; lines[2]
 
-    mov [esp + 20], ecx  ; i
 
 mainLoop:
 ;/////// vx
@@ -160,12 +164,12 @@ L2:
     JNZ mainLoop
 ;/////// end of loop
 
-    ;add esp, 24
-    ;popf
-    ;pop edx
-    ;pop ecx
-    ;pop ebx
-    ;pop eax
+    add esp, 24
+    popf
+    pop edx
+    pop ecx
+    pop ebx
+    pop eax
 
     mov esp, ebp
     pop ebp

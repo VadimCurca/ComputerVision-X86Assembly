@@ -17,7 +17,7 @@
 uint8_t inImg[imgSize + (WIDTH*2)];
 uint8_t outImg[imgSize];
 
-void sobel(uint8_t* in, uint8_t* out, uint32_t width){
+void sobel(uint8_t* in, uint8_t* out, uint32_t width, uint32_t heigth){
 #define CLAMP(x) ((x) < 255 ? (x) : 255);
 
     const int xSobel[3][3] = {{-1, 0, 1},
@@ -32,12 +32,13 @@ void sobel(uint8_t* in, uint8_t* out, uint32_t width){
     uint8_t *lines[3];
 
     int vx = 0, vy = 0;
+    const int size = width * heigth;
 
     lines[0] = (uint8_t *)in;
-    lines[1] = (uint8_t *)(in+WIDTH);
-    lines[2] = (uint8_t *)(in+2*WIDTH);
+    lines[1] = (uint8_t *)(in+width);
+    lines[2] = (uint8_t *)(in+2*width);
 
-    for(i = 0; i < width; i++){
+    for(i = 0; i < size; i++){
         vx = xSobel[0][0] * lines[0][i-1] + xSobel[0][1] * lines[0][i] + xSobel[0][2] * lines[0][i+1] +
              xSobel[1][0] * lines[1][i-1] + xSobel[1][1] * lines[1][i] + xSobel[1][2] * lines[1][i+1] +
              xSobel[2][0] * lines[2][i-1] + xSobel[2][1] * lines[2][i] + xSobel[2][2] * lines[2][i+1];
@@ -50,7 +51,7 @@ void sobel(uint8_t* in, uint8_t* out, uint32_t width){
     }
 }
 
-extern void _sobel(uint8_t* in, uint8_t* out, uint32_t width);
+extern void asm_sobel(uint8_t* in, uint8_t* out, uint32_t width, uint32_t heigth);
 
 void readImg(uint8_t* buffer){
     FILE * File;
@@ -81,6 +82,6 @@ void writeImg(uint8_t* buffer){
 
 int main(){
     readImg(inImg);
-    _sobel(inImg, outImg, imgSize);
+    asm_sobel(inImg, outImg, WIDTH, HEIGTH);
     writeImg(outImg);
 }
